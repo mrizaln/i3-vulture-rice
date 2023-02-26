@@ -3,7 +3,9 @@ set $super Mod4
 set $alt Mod1
 
 # set font
-font pango: Ubuntu 10
+# font pango: Ubuntu Condensed, Bold 10
+# font pango: Iosevka SS14 Bold 10
+font pango: Cantarell Bold 10
 
 # Use Mouse+$super to drag floating windows to their wanted position
 floating_modifier $super
@@ -13,40 +15,62 @@ exec --no-startup-id bash -c $HOME/.fehbg
 exec --no-startup-id xsettingsd &
 exec --no-startup-id compton -b
 exec --no-startup-id sct 6000
+exec --no-startup-id kdeconnect-indicator &
+exec --no-startup-id nm-applet &
+# exec --no-startup-id tmux new-session -d -s Startup; tmux send-keys -t Startup /home/mrizaln/Git/custom-desktop/submodules/bspwm-lynx-rice/.config/bspwm/tmux-start.sh Enter; alacritty -e tmux attach -t Startup
 
 # start a terminal
-bindsym $super+Return exec "urxvt -e bash -c \\"(cat ~/.cache/wal/sequences &); tmux\\""
-bindsym $super+Shift+Return exec urxvt -e bash
-bindsym $super+Control+Return exec "urxvt -name \\"floating\\" -e bash -c \\"(cat ~/.cache/wal/sequences &); tmux\\""
-bindsym $super+Control+Shift+Return exec urxvt -name "floating"
+# bindsym $super+Return               exec "rxvt -e bash -c \\"(cat ~/.cache/wal/sequences &); tmux\\""
+bindsym $super+Return               exec alacritty -e tmux
+# bindsym $super+Shift+Return         exec urxvt
+bindsym $super+Shift+Return         exec alacritty
+# bindsym $super+Control+Return       exec "urxvt -name \\"floating\\" -e bash -c \\"(cat ~/.cache/wal/sequences &); tmux\\""
+bindsym $super+Control+Return       exec alacritty --class floating -e tmux
+# bindsym $super+Control+Shift+Return exec urxvt -name "floating"
+bindsym $super+Control+Shift+Return exec alacritty --class floating
 
 # start dmenu (a program launcher)
-bindsym $super+d exec i3-dmenu-desktop --dmenu="dmenu -i -fn 'Noto Sans:size=12'"
+bindsym $super+d       exec i3-dmenu-desktop --dmenu="dmenu -i -fn 'Noto Sans:size=12'"
 bindsym $super+Shift+d exec rofi -lines 12 -padding 18 -width 60 -location 0 -show drun -sidebar-mode -columns 3 -font 'Noto Sans 12'
 
 # screenshot
-bindsym --release Print exec $HOME/.local/bin/screenshot.sh whole copy
+bindsym --release Print               exec $HOME/.local/bin/screenshot.sh whole copy
 #bindsym --release $alt+Print exec $HOME/.local/bin/screenshot.sh whole copy 5
-bindsym --release Control+Print exec $HOME/.local/bin/screenshot.sh whole copy-only
+bindsym --release Control+Print       exec $HOME/.local/bin/screenshot.sh whole copy-only
 #bindsym --release $alt+Control+Print exec $HOME/.local/bin/screenshot.sh whole copy-only 5
-bindsym --release Shift+Print exec $HOME/.local/bin/screenshot.sh part copy
+bindsym --release Shift+Print         exec $HOME/.local/bin/screenshot.sh part copy
 #bindsym --release $alt+Shift+Print exec $HOME/.local/bin/screenshot.sh part copy 5
 bindsym --release Control+Shift+Print exec $HOME/.local/bin/screenshot.sh part copy-only
 #bindsym --release $alt+Control+Shift+Print exec $HOME/.local/bin/screenshot.sh part copy-only 5
+bindsym --release $super+Print        exec flameshot gui
+
+# dunst control
+bindsym $super+grave        exec dunstctl close
+bindsym $super+Shift+grave  exec dunstctl close-all
+bindsym $super+n            exec dunstctl history-pop
+bindsym $super+Shift+n      exec dunstctl context
 
 # common apps keybinds
-bindsym $super+l exec i3lock -i ~/.config/default_wallpaper
+bindsym $super+l       exec i3lock -i ~/.config/default_wallpaper
 bindsym $super+Shift+b exec firefox
 bindsym $super+Shift+f exec thunar
 
 # brightness control
-bindsym XF86MonBrightnessUp   exec brightnessctl -e s +5%
-bindsym XF86MonBrightnessDown exec brightnessctl -e s 5%-
+bindsym XF86MonBrightnessUp           exec brightnessctl -e s +5%
+bindsym Control+XF86MonBrightnessUp   exec brightnessctl -e s +2%
+bindsym Shift+XF86MonBrightnessUp     exec brightnessctl -e s +10%
+bindsym XF86MonBrightnessDown         exec brightnessctl -e s 5%-
+bindsym Control+XF86MonBrightnessDown exec brightnessctl -e s 2%-
+bindsym Shift+XF86MonBrightnessDown   exec brightnessctl -e s 10%-
 
 #change volume
-bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
-bindsym XF86AudioLowerVolume exec amixer -q set Master 5%-
-bindsym XF86AudioMute exec amixer set Master toggle
+bindsym XF86AudioRaiseVolume         exec amixer -q set Master 5%+
+bindsym Control+XF86AudioRaiseVolume exec amixer -q set Master 2%+
+bindsym Shift+XF86AudioRaiseVolume   exec amixer -q set Master 10%+
+bindsym XF86AudioLowerVolume         exec amixer -q set Master 5%-
+bindsym Control+XF86AudioLowerVolume exec amixer -q set Master 2%-
+bindsym Shift+XF86AudioLowerVolume   exec amixer -q set Master 10%-
+bindsym XF86AudioMute                exec amixer set Master toggle
 
 # music control
 bindsym XF86AudioNext exec mpc next
@@ -56,19 +80,22 @@ bindsym XF86AudioStop exec mpc stop
 
 # kill focused window
 bindsym $super+q kill
-bindsym $alt+F4 kill
+bindsym $alt+F4  kill
 
 # change focus
-bindsym $super+Left focus left
-bindsym $super+Down focus down
-bindsym $super+Up focus up
+bindsym $super+Left  focus left
+bindsym $super+Down  focus down
+bindsym $super+Up    focus up
 bindsym $super+Right focus right
 
 # move focused window
-bindsym $super+Shift+Left move left
-bindsym $super+Shift+Down move down
-bindsym $super+Shift+Up move up
+bindsym $super+Shift+Left  move left
+bindsym $super+Shift+Down  move down
+bindsym $super+Shift+Up    move up
 bindsym $super+Shift+Right move right
+
+# toggle window border
+bindsym $super+b border toggle
 
 # split in horizontal orientation
 bindsym $super+h split h
@@ -84,26 +111,31 @@ bindsym $super+s layout stacking
 bindsym $super+w layout tabbed
 bindsym $super+e layout toggle split
 
+# swap focus between 2 last focused windows (not working)
+# exec i3-swap-focus
+# bindsym $super+Control+Tab exec pkill -USR1 -F "${XDG_RUNTIME_DIR}/swap_focus.pid"
+
 # toggle tiling / floating
 bindsym $super+space floating toggle
+bindsym $super+y sticky toggle
 
 # change focus between tiling / floating windows
 bindsym $super+Shift+space focus mode_toggle
 
 # switch to workspace
 bindsym $alt+Control+Right workspace next
-bindsym $alt+Control+Left workspace prev
-bindsym $super+1 workspace 1
-bindsym $super+2 workspace 2
-bindsym $super+3 workspace 3
-bindsym $super+4 workspace 4
-bindsym $super+5 workspace 5
-bindsym $super+6 workspace 6
-bindsym $super+7 workspace 7
-bindsym $super+8 workspace 8
-bindsym $super+9 workspace 9
-bindsym $super+0 workspace 10
-bindsym $super+Tab workspace back_and_forth
+bindsym $alt+Control+Left  workspace prev
+bindsym $super+1           workspace 1
+bindsym $super+2           workspace 2
+bindsym $super+3           workspace 3
+bindsym $super+4           workspace 4
+bindsym $super+5           workspace 5
+bindsym $super+6           workspace 6
+bindsym $super+7           workspace 7
+bindsym $super+8           workspace 8
+bindsym $super+9           workspace 9
+bindsym $super+0           workspace 10
+bindsym $super+Tab         workspace back_and_forth
 
 # move focused container to workspace
 bindsym $super+Shift+1 move container to workspace 1
@@ -139,39 +171,48 @@ bindsym $super+r mode "resize"
 
 # panel
 bar {
-        colors {
-        background #2f343f
-        statusline #2f343f
+    i3bar_command i3bar --transparency
+    position bottom
+
+    colors {
+        # background #2f343fe0
+        background #2a2e39e0
+        # statusline #2f343f
+        # statusline #93cddb
+        statusline #d8dee8
         separator #4b5262
 
         # colour of border, background, and text
-        focused_workspace       #2f343f #bf616a #d8dee8
+        focused_workspace       #2f343f #46638f #d8dee8
         active_workspace        #2f343f #2f343f #d8dee8
         inactive_workspace      #2f343f #2f343f #d8dee8
         urgent_workspace        #2f343f #ebcb8b #2f343f
     }
-        status_command i3status
-        padding 2px 5px 3px 5px
-
+    status_command i3status
+    padding 0px 5px 0px 5px
 }
 
 # window rules, you can find the window class using xprop (order matters)
 for_window [class=".*"] border pixel 2
 assign [class=Firefox|Transmission-gtk] 1
-assign [class=Geany|Evince|Gucharmap|Soffice|libreoffice*] 3
-assign [class=URxvt instance=urxvt] 5
-assign [class=Audacity|Vlc|mpv|Ghb|Xfburn|Gimp*|Inkscape] 8
-assign [class=Thunar|File-roller] 9
-assign [class=Lxappearance|System-config-printer.py|Lxtask|GParted|Pavucontrol|Exo-helper*|Lxrandr|Arandr] 10
+# assign [class=Geany|Evince|Gucharmap|Soffice|libreoffice*] 3
+assign [class=libreoffice*] 3
+assign [class=URxvt|Alacritty instance=urxvt|Alacritty] 5
+assign [class=Audacity|Vlc|Gimp*|Inkscape] 8
+assign [class=Thunar] 9
+assign [class=Lxappearance|GParted|Pavucontrol|Exo-helper*|Lxrandr|Arandr] 10
 
-for_window [class=Viewnior|feh|Audacious|File-roller|Lxappearance|Lxtask|Pavucontrol|zoom] floating enable
-for_window [class=URxvt|Firefox|Geany|Evince|Soffice|libreoffice*|mpv|Ghb|Xfburn|Gimp*|Inkscape|Vlc|Lxappearance|Audacity] focus
-for_window [class=Xfburn|GParted|System-config-printer.py|Lxtask|Pavucontrol|Exo-helper*|Lxrandr|Arandr] focus
+for_window [class=feh|Yad|Lxappearance|Pavucontrol|zoom|SimpleScreenRecorder] floating enable
+for_window [class=URxvt|Alacritty|Firefox|Evince|Soffice|libreoffice*|mpv|Gimp*|Inkscape|Vlc|Lxappearance|Audacity|Thunar] focus
+for_window [class=GParted|Pavucontrol|Lxrandr|Arandr] focus
+
+for_window [class="Traffic Model"] border normal
 
 for_window [class="^URxvt$" instance="^floating$"] floating enable
+for_window [class="^Alacritty$" instance="^floating$"] floating enable
 
 # colour of                 border, bg.,    text,   indicator, child_border
-client.focused              #404a5e #2f343f #d8dee8 #bf616a    #404a5e
+client.focused              #46638f #2f343f #d8dee8 #2f343f    #46638f
 client.focused_inactive     #2f343f #2f343f #d8dee8 #2f343f    #2f343f
 client.unfocused            #2f343f #2f343f #d8dee8 #2f343f    #2f343f
 client.urgent               #2f343f #2f343f #d8dee8 #2f343f    #2f343f
