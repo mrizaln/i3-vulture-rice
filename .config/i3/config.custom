@@ -11,12 +11,18 @@ font pango: Cantarell Bold 10
 floating_modifier $super
 
 #autostart
-exec --no-startup-id bash -c $HOME/.fehbg
-exec --no-startup-id xsettingsd &
-exec --no-startup-id compton -b
+exec --no-startup-id lxpolkit &
 exec --no-startup-id sct 6000
+exec --no-startup-id bash -c $HOME/.fehbg
+# exec --no-startup-id xsettingsd &
+exec --no-startup-id compton -b
 exec --no-startup-id kdeconnect-indicator &
 exec --no-startup-id nm-applet &
+exec --no-startup-id mcontrolcenter &
+exec --no-startup-id libinput-gestures-setup start
+exec --no-startup-id alacritty -e tmux
+exec --no-startup-id xset r rate 300 30
+
 # exec --no-startup-id tmux new-session -d -s Startup; tmux send-keys -t Startup /home/mrizaln/Git/custom-desktop/submodules/bspwm-lynx-rice/.config/bspwm/tmux-start.sh Enter; alacritty -e tmux attach -t Startup
 
 # start a terminal
@@ -51,7 +57,7 @@ bindsym $super+n            exec dunstctl history-pop
 bindsym $super+Shift+n      exec dunstctl context
 
 # common apps keybinds
-bindsym $super+l       exec i3lock -i ~/.config/default_wallpaper
+# bindsym $super+l       exec i3lock -i ~/.config/default_wallpaper
 bindsym $super+Shift+b exec firefox
 bindsym $super+Shift+f exec thunar
 
@@ -88,20 +94,30 @@ bindsym $super+Down  focus down
 bindsym $super+Up    focus up
 bindsym $super+Right focus right
 
+bindsym $super+h focus left
+bindsym $super+j focus down
+bindsym $super+k focus up
+bindsym $super+l focus right
+
 # move focused window
 bindsym $super+Shift+Left  move left
 bindsym $super+Shift+Down  move down
 bindsym $super+Shift+Up    move up
 bindsym $super+Shift+Right move right
 
+bindsym $super+Shift+h move left
+bindsym $super+Shift+j move down
+bindsym $super+Shift+k move up
+bindsym $super+Shift+l move right
+
 # toggle window border
 bindsym $super+b border toggle
 
 # split in horizontal orientation
-bindsym $super+h split h
+bindsym $super+Control+h split h
 
 # split in vertical orientation
-bindsym $super+v split v
+bindsym $super+Control+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $super+f fullscreen toggle
@@ -161,22 +177,30 @@ bindsym $alt+Control+Delete exec "i3-nagbar -t warning -m 'Power Options:' -B 's
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        bindsym Left resize shrink width 5 px or 5 ppt
-        bindsym Down resize grow height 5 px or 5 ppt
-        bindsym Up resize shrink height 5 px or 5 ppt
-        bindsym Right resize grow width 5 px or 5 ppt
+        bindsym h resize shrink width 2 px or 2 ppt
+        bindsym j resize grow height 2 px or 2 ppt
+        bindsym k resize shrink height 2 px or 2 ppt
+        bindsym l resize grow width 2 px or 2 ppt
+        bindsym Control+h resize shrink width 1 px or 1 ppt
+        bindsym Control+j resize grow height 1 px or 1 ppt
+        bindsym Control+k resize shrink height 1 px or 1 ppt
+        bindsym Control+l resize grow width 1 px or 1 ppt
+        bindsym Shift+h resize shrink width 5 px or 5 ppt
+        bindsym Shift+j resize grow height 5 px or 5 ppt
+        bindsym Shift+k resize shrink height 5 px or 5 ppt
+        bindsym Shift+l resize grow width 5 px or 5 ppt
         bindsym Return mode "default"
 }
 bindsym $super+r mode "resize"
 
 # panel
 bar {
-    i3bar_command i3bar --transparency
+    # i3bar_command i3bar --transparency
     position bottom
 
     colors {
         # background #2f343fe0
-        background #2a2e39e0
+        background #2a2e39
         # statusline #2f343f
         # statusline #93cddb
         statusline #d8dee8
@@ -194,27 +218,34 @@ bar {
 
 # window rules, you can find the window class using xprop (order matters)
 for_window [class=".*"] border pixel 2
-assign [class=Firefox|Transmission-gtk] 1
-# assign [class=Geany|Evince|Gucharmap|Soffice|libreoffice*] 3
-assign [class=libreoffice*] 3
+assign [class=Transmission-gtk] 1
+assign [class=Soffice|libreoffice*] 3
 assign [class=URxvt|Alacritty instance=urxvt|Alacritty] 5
 assign [class=Audacity|Vlc|Gimp*|Inkscape] 8
 assign [class=Thunar] 9
-assign [class=Lxappearance|GParted|Pavucontrol|Exo-helper*|Lxrandr|Arandr] 10
+assign [class=Lxappearance|GParted|Pavucontrol|Exo-helper*|Lxrandr|Arandr|BleachBit|Gnome-disks|baobab] 10
 
 for_window [class=feh|Yad|Lxappearance|Pavucontrol|zoom|SimpleScreenRecorder] floating enable
-for_window [class=URxvt|Alacritty|Firefox|Evince|Soffice|libreoffice*|mpv|Gimp*|Inkscape|Vlc|Lxappearance|Audacity|Thunar] focus
+for_window [class=URxvt|Alacritty|firefox|Evince|Soffice|libreoffice*|mpv|Gimp*|Inkscape|Vlc|Lxappearance|Audacity|Thunar] focus
 for_window [class=GParted|Pavucontrol|Lxrandr|Arandr] focus
-
-for_window [class="Traffic Model"] border normal
 
 for_window [class="^URxvt$" instance="^floating$"] floating enable
 for_window [class="^Alacritty$" instance="^floating$"] floating enable
+for_window [class=jetbrains-studio title=splash] floating enable
+
+for_window [class=firefox instance=Navigator] floating disable
+
+for_window [class="Traffic Model"] border normal
 
 # colour of                 border, bg.,    text,   indicator, child_border
-client.focused              #46638f #2f343f #d8dee8 #2f343f    #46638f
+client.focused              #46638f #2f343f #d8dee8 #a0a0ff    #46638f
 client.focused_inactive     #2f343f #2f343f #d8dee8 #2f343f    #2f343f
 client.unfocused            #2f343f #2f343f #d8dee8 #2f343f    #2f343f
 client.urgent               #2f343f #2f343f #d8dee8 #2f343f    #2f343f
 client.placeholder          #2f343f #2f343f #d8dee8 #2f343f    #2f343f
 client.background           #2f343f
+
+# gaps (requires i3 v4.22)
+gaps inner 6px
+gaps outer 0px
+smart_gaps on
